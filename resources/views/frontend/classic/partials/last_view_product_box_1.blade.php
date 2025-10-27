@@ -93,16 +93,20 @@ $cart_added = [];
         </h3>
         <div class="fs-14 d-flex justify-content-center mt-3">
             @if ($product->auction_product == 0)
-            <!-- Previous price -->
-            @if (home_base_price($product) != home_discounted_base_price($product))
-            <div class="disc-amount has-transition">
-                <del class="fw-400 text-secondary mr-1">{{ home_base_price($product) }}</del>
-            </div>
+            @if(should_show_price())
+                <!-- Previous price -->
+                @if (home_base_price($product) != home_discounted_base_price($product))
+                <div class="disc-amount has-transition">
+                    <del class="fw-400 text-secondary mr-1">{{ home_base_price($product) }}</del>
+                </div>
+                @endif
+                <!-- price -->
+                <div class="">
+                    <span class="fw-700 text-primary">{{ home_discounted_base_price($product) }}</span>
+                </div>
+            @else
+                <x-price-display />
             @endif
-            <!-- price -->
-            <div class="">
-                <span class="fw-700 text-primary">{{ home_discounted_base_price($product) }}</span>
-            </div>
             @endif
             @if ($product->auction_product == 1)
             <!-- Bid Amount -->

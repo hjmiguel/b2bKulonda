@@ -175,6 +175,7 @@
             <a href="{{ $product_url }}" class="d-block text-reset hov-text-primary"
                 title="{{ $product->getTranslation('name') }}">{{ $product->getTranslation('name') }}</a>
         </h3>
+            @if (should_show_price())
         <div class="fs-14 d-flex justify-content-center mt-3">
             @if ($product->auction_product == 0)
                 <!-- Previous price -->
@@ -195,5 +196,14 @@
                 </div>
             @endif
         </div>
+            @else
+                <!-- Usuário não logado -->
+                <div class="text-center">
+                    <a href="{{ route('user.login') }}" class="text-primary fw-500 fs-13">
+                        <i class="la la-lock mr-1"></i>
+                        {{ translate('Login to see price') }}
+                    </a>
+                </div>
+            @endif
     </div>
 </div>

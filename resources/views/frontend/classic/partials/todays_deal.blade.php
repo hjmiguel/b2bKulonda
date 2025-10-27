@@ -54,14 +54,22 @@
                                                 onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
                                         </div>
                                         <!-- Price -->
-                                        <div class="fs-14 mr-1 mt-3 text-center">
-                                            <span
-                                                class="d-block {{ $todays_deal_banner_text_color }} fw-700">{{ home_discounted_base_price($product) }}</span>
-                                            @if (home_base_price($product) != home_discounted_base_price($product))
-                                                <del
-                                                    class="d-block text-secondary fw-400">{{ home_base_price($product) }}</del>
-                                            @endif
-                                        </div>
+                                        @if(should_show_price())
+                                            <div class="fs-14 mr-1 mt-3 text-center">
+                                                <span
+                                                    class="d-block {{ $todays_deal_banner_text_color }} fw-700">{{ home_discounted_base_price($product) }}</span>
+                                                @if (home_base_price($product) != home_discounted_base_price($product))
+                                                    <del
+                                                        class="d-block text-secondary fw-400">{{ home_base_price($product) }}</del>
+                                                @endif
+                                            </div>
+                                        @else
+                                            <div class="fs-12 mr-1 mt-3 text-center">
+                                                <a href="{{ route('user.login') }}" class="d-block {{ $todays_deal_banner_text_color }} fw-500 opacity-80">
+                                                    <i class="las la-lock mr-1"></i>{{ translate('Login to see price') }}
+                                                </a>
+                                            </div>
+                                        @endif
                                     </a>
                                 </div>
                             @endforeach
