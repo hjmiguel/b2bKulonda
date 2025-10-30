@@ -688,7 +688,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
     Route::post('/import-data', [BusinessSettingsController::class, 'import_data'])->name('import_data');
 
     // uploaded files
-    Route::resource('/uploaded-files', AizUploadController::class);
+    Route::resource('/uploaded-files', AizUploadController::class)->except(['destroy']);
     Route::controller(AizUploadController::class)->group(function () {
         Route::any('/uploaded-files/file-info', 'file_info')->name('uploaded-files.info');
         Route::get('/uploaded-files/destroy/{id}', 'destroy')->name('uploaded-files.destroy');
