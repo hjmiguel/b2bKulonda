@@ -117,6 +117,7 @@ Route::controller(ShopController::class)->group(function () {
     
 });
 
+// Public routes - Registration and Login related
 Route::controller(HomeController::class)->group(function () {
     Route::get('/registration/verification', 'verifyRegEmailorPhone')->name('registration.verification');
     Route::post('/registration/verification-code-send', 'sendRegVerificationCode')->name('customer-reg.verification_code_send');
@@ -133,55 +134,112 @@ Route::controller(HomeController::class)->group(function () {
 
     Route::post('/import-data', 'import_data');
 
-    //Home Page
-    Route::get('/', 'index')->name('home');
-
-    Route::post('/home/section/featured', 'load_featured_section')->name('home.section.featured');
-    Route::post('/home/section/todays-deal', 'load_todays_deal_section')->name('home.section.todays_deal');
-    Route::post('/home/section/best-selling', 'load_best_selling_section')->name('home.section.best_selling');
-    Route::post('/home/section/newest-products', 'load_newest_product_section')->name('home.section.newest_products');
-    Route::post('/home/section/home-categories', 'load_home_categories_section')->name('home.section.home_categories');
-    Route::post('/home/section/best-sellers', 'load_best_sellers_section')->name('home.section.best_sellers');
-    Route::post('/home/section/preorder-products', 'load_preorder_featured_products_section')->name('home.section.preorder_products');
-
-    //category dropdown menu ajax call
-    Route::post('/category/nav-element-list', 'get_category_items')->name('category.elements');
-
-    //Flash Deal Details Page
-    Route::get('/flash-deals', 'all_flash_deals')->name('flash-deals');
-    Route::get('/flash-deal/{slug}', 'flash_deal_details')->name('flash-deal-details');
-
-    //Todays Deal Details Page
-    Route::get('/todays-deal', 'todays_deal')->name('todays-deal');
-
-    //Todays Deal Details Page
-    Route::get('/best-selling', 'best_selling')->name('best-selling');
-
-    //Featured Products Page
-    Route::get('/featured-products', 'featured_products')->name('featured-products');
-
-    Route::get('/product/{slug}', 'product')->name('product');
-    Route::post('/product/variant-price', 'variant_price')->name('products.variant_price');
-    Route::get('/shop/{slug}', 'shop')->name('shop.visit');
-    Route::get('/shop/{slug}/{type}', 'filter_shop')->name('shop.visit.type');
-
-    Route::get('/customer-packages', 'premium_package_index')->name('customer_packages_list_show');
-
-    Route::get('/brands', 'all_brands')->name('brands.all');
-    Route::get('/categories', 'all_categories')->name('categories.all');
-    Route::get('/sellers', 'all_seller')->name('sellers');
-    Route::get('/coupons', 'all_coupons')->name('coupons.all');
-    Route::get('/inhouse', 'inhouse_products')->name('inhouse.all');
-
-
-    // Policies
+    // Policies - Public
     Route::get('/seller-policy', 'sellerpolicy')->name('sellerpolicy');
     Route::get('/return-policy', 'returnpolicy')->name('returnpolicy');
     Route::get('/support-policy', 'supportpolicy')->name('supportpolicy');
     Route::get('/terms', 'terms')->name('terms');
     Route::get('/privacy-policy', 'privacypolicy')->name('privacypolicy');
+});
 
-    Route::get('/track-your-order', 'trackOrder')->name('orders.track');
+// B2B Protected Routes - Require Authentication
+Route::middleware(['auth'])->group(function () {
+    Route::controller(HomeController::class)->group(function () {
+        //Home Page
+        Route::get('/', 'index')->name('home');
+
+        Route::post('/home/section/featured', 'load_featured_section')->name('home.section.featured');
+        Route::post('/home/section/todays-deal', 'load_todays_deal_section')->name('home.section.todays_deal');
+        Route::post('/home/section/best-selling', 'load_best_selling_section')->name('home.section.best_selling');
+        Route::post('/home/section/newest-products', 'load_newest_product_section')->name('home.section.newest_products');
+        Route::post('/home/section/home-categories', 'load_home_categories_section')->name('home.section.home_categories');
+        Route::post('/home/section/best-sellers', 'load_best_sellers_section')->name('home.section.best_sellers');
+        Route::post('/home/section/preorder-products', 'load_preorder_featured_products_section')->name('home.section.preorder_products');
+
+        //category dropdown menu ajax call
+        Route::post('/category/nav-element-list', 'get_category_items')->name('category.elements');
+
+        //Flash Deal Details Page
+        Route::get('/flash-deals', 'all_flash_deals')->name('flash-deals');
+        Route::get('/flash-deal/{slug}', 'flash_deal_details')->name('flash-deal-details');
+
+        //Todays Deal Details Page
+        Route::get('/todays-deal', 'todays_deal')->name('todays-deal');
+
+        //Todays Deal Details Page
+        Route::get('/best-selling', 'best_selling')->name('best-selling');
+
+        //Featured Products Page
+        Route::get('/featured-products', 'featured_products')->name('featured-products');
+
+        Route::get('/product/{slug}', 'product')->name('product');
+        Route::post('/product/variant-price', 'variant_price')->name('products.variant_price');
+        Route::get('/shop/{slug}', 'shop')->name('shop.visit');
+        Route::get('/shop/{slug}/{type}', 'filter_shop')->name('shop.visit.type');
+
+        Route::get('/customer-packages', 'premium_package_index')->name('customer_packages_list_show');
+
+        Route::get('/brands', 'all_brands')->name('brands.all');
+        Route::get('/categories', 'all_categories')->name('categories.all');
+        Route::get('/sellers', 'all_seller')->name('sellers');
+        Route::get('/coupons', 'all_coupons')->name('coupons.all');
+        Route::get('/inhouse', 'inhouse_products')->name('inhouse.all');
+
+        Route::get('/track-your-order', 'trackOrder')->name('orders.track');
+    });
+
+    // Classified Product
+    Route::controller(CustomerProductController::class)->group(function () {
+        Route::get('/customer-products', 'customer_products_listing')->name('customer.products');
+        Route::get('/customer-products?category={category_slug}', 'search')->name('customer_products.category');
+        Route::get('/customer-products?city={city_id}', 'search')->name('customer_products.city');
+        Route::get('/customer-products?q={search}', 'search')->name('customer_products.search');
+        Route::get('/customer-product/{slug}', 'customer_product')->name('customer.product');
+    });
+
+    // Search
+    Route::controller(SearchController::class)->group(function () {
+        Route::get('/search', 'index')->name('search');
+        Route::get('/search?keyword={search}', 'index')->name('suggestion.search');
+        Route::get('/search2', 'index2')->name('suggestion.search2');
+        Route::post('/ajax-search', 'ajax_search')->name('search.ajax');
+        Route::get('/category/{category_slug}', 'listingByCategory')->name('products.category');
+        Route::get('/brand/{brand_slug}', 'listingByBrand')->name('products.brand');
+    });
+
+    // Cart
+    Route::controller(CartController::class)->group(function () {
+        Route::get('/cart', 'index')->name('cart');
+        Route::post('/cart/show-cart-modal', 'showCartModal')->name('cart.showCartModal');
+        Route::post('/cart/addtocart', 'addToCart')->name('cart.addToCart');
+        Route::post('/cart/removeFromCart', 'removeFromCart')->name('cart.removeFromCart');
+        Route::post('/cart/updateQuantity', 'updateQuantity')->name('cart.updateQuantity');
+        Route::post('/cart/updateCartStatus', 'updateCartStatus')->name('cart.updateCartStatus');
+    });
+
+    // Compare
+    Route::controller(CompareController::class)->group(function () {
+        Route::get('/compare', 'index')->name('compare');
+        Route::get('/compare/reset', 'reset')->name('compare.reset');
+        Route::post('/compare/addToCompare', 'addToCompare')->name('compare.addToCompare');
+        Route::get('/compare/details/{id}', 'details')->name('compare.details');
+    });
+
+    // Checkout Routes
+    Route::group(['prefix' => 'checkout'], function () {
+        Route::controller(CheckoutController::class)->group(function () {
+            Route::get('/', 'index')->name('checkout');
+            Route::any('/delivery-info', 'store_shipping_info')->name('checkout.store_shipping_infostore');
+            Route::post('/payment-select', 'store_delivery_info')->name('checkout.store_delivery_info');
+            Route::post('/payment', 'checkout')->name('payment.checkout');
+            Route::get('/order-confirmed', 'order_confirmed')->name('order_confirmed');
+            Route::post('/apply-coupon-code', 'apply_coupon_code')->name('checkout.apply_coupon_code');
+            Route::post('/remove-coupon-code', 'remove_coupon_code')->name('checkout.remove_coupon_code');
+            Route::post('/guest-customer-info-check', 'guestCustomerInfoCheck')->name('guest_customer_info_check');
+            Route::post('/updateDeliveryAddress', 'updateDeliveryAddress')->name('checkout.updateDeliveryAddress');
+            Route::post('/updateDeliveryInfo', 'updateDeliveryInfo')->name('checkout.updateDeliveryInfo');
+        });
+    });
 });
 
 // Language Switch
@@ -195,35 +253,6 @@ Route::get('/size-charts-show/{id}', [SizeChartController::class, 'show'])->name
 
 Route::get('/sitemap.xml', function () {
     return base_path('sitemap.xml');
-});
-
-// Classified Product
-Route::controller(CustomerProductController::class)->group(function () {
-    Route::get('/customer-products', 'customer_products_listing')->name('customer.products');
-    Route::get('/customer-products?category={category_slug}', 'search')->name('customer_products.category');
-    Route::get('/customer-products?city={city_id}', 'search')->name('customer_products.city');
-    Route::get('/customer-products?q={search}', 'search')->name('customer_products.search');
-    Route::get('/customer-product/{slug}', 'customer_product')->name('customer.product');
-});
-
-// Search
-Route::controller(SearchController::class)->group(function () {
-    Route::get('/search', 'index')->name('search');
-    Route::get('/search?keyword={search}', 'index')->name('suggestion.search');
-    Route::get('/search2', 'index2')->name('suggestion.search2');
-    Route::post('/ajax-search', 'ajax_search')->name('search.ajax');
-    Route::get('/category/{category_slug}', 'listingByCategory')->name('products.category');
-    Route::get('/brand/{brand_slug}', 'listingByBrand')->name('products.brand');
-});
-
-// Cart
-Route::controller(CartController::class)->group(function () {
-    Route::get('/cart', 'index')->name('cart');
-    Route::post('/cart/show-cart-modal', 'showCartModal')->name('cart.showCartModal');
-    Route::post('/cart/addtocart', 'addToCart')->name('cart.addToCart');
-    Route::post('/cart/removeFromCart', 'removeFromCart')->name('cart.removeFromCart');
-    Route::post('/cart/updateQuantity', 'updateQuantity')->name('cart.updateQuantity');
-    Route::post('/cart/updateCartStatus', 'updateCartStatus')->name('cart.updateCartStatus');
 });
 
 //Paypal START
@@ -266,14 +295,6 @@ Route::controller(StripeController::class)->group(function () {
 });
 //Stripe END
 
-// Compare
-Route::controller(CompareController::class)->group(function () {
-    Route::get('/compare', 'index')->name('compare');
-    Route::get('/compare/reset', 'reset')->name('compare.reset');
-    Route::post('/compare/addToCompare', 'addToCompare')->name('compare.addToCompare');
-    Route::get('/compare/details/{id}', 'details')->name('compare.details');
-});
-
 // Subscribe
 Route::resource('subscribers', SubscriberController::class);
 
@@ -294,22 +315,6 @@ Route::group(['middleware' => ['user', 'verified', 'unbanned']], function () {
         Route::post('/notifications/bulk-delete', 'bulkDeleteCustomer')->name('notifications.bulk_delete');
         Route::get('/notification/read-and-redirect/{id}', 'readAndRedirect')->name('notification.read-and-redirect');
         Route::get('/non-linkable-notification-read', 'nonLinkableNotificationRead')->name('non-linkable-notification-read');
-    });
-});
-
-// Checkout Routs
-Route::group(['prefix' => 'checkout'], function () {
-    Route::controller(CheckoutController::class)->group(function () {
-        Route::get('/', 'index')->name('checkout');
-        Route::any('/delivery-info', 'store_shipping_info')->name('checkout.store_shipping_infostore');
-        Route::post('/payment-select', 'store_delivery_info')->name('checkout.store_delivery_info');
-        Route::post('/payment', 'checkout')->name('payment.checkout');
-        Route::get('/order-confirmed', 'order_confirmed')->name('order_confirmed');
-        Route::post('/apply-coupon-code', 'apply_coupon_code')->name('checkout.apply_coupon_code');
-        Route::post('/remove-coupon-code', 'remove_coupon_code')->name('checkout.remove_coupon_code');
-        Route::post('/guest-customer-info-check', 'guestCustomerInfoCheck')->name('guest_customer_info_check');
-        Route::post('/updateDeliveryAddress', 'updateDeliveryAddress')->name('checkout.updateDeliveryAddress');
-        Route::post('/updateDeliveryInfo', 'updateDeliveryInfo')->name('checkout.updateDeliveryInfo');
     });
 });
 

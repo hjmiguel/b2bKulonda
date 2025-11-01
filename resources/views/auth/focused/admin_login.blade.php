@@ -78,6 +78,23 @@
                                     </div>
                                 </form>
 
+                                <!-- Registration Links -->
+                                <div class="text-center mt-3">
+                                    <p class="fs-12 fw-400 text-gray-dark mb-2">{{ translate('Ainda não tem conta?') }}</p>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <a href="{{ route('user.registration') }}" class="btn btn-soft-primary btn-block btn-sm rounded-0">
+                                                <i class="las la-user"></i> {{ translate('Registrar Cliente') }}
+                                            </a>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="{{ route('shops.create') }}" class="btn btn-soft-info btn-block btn-sm rounded-0">
+                                                <i class="las la-store"></i> {{ translate('Registrar Vendedor') }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- DEMO MODE -->
                                 @if (env("DEMO_MODE") == "On")
                                     <div class="mt-4">
