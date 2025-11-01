@@ -517,24 +517,3 @@ Route::controller(PageController::class)->group(function () {
 Route::controller(ContactController::class)->group(function () {
     Route::post('/contact', 'contact')->name('contact');
 });
-
-/*
-|--------------------------------------------------------------------------
-| ProxyPay EMIS Routes
-|--------------------------------------------------------------------------
-|
-| Rotas para integração com ProxyPay (Multicaixa EMIS)
-|
-*/
-
-// Exibir referência EMIS
-Route::get('/payment/proxypay/{reference_id}', [App\Http\Controllers\ProxyPayController::class, 'show'])
-    ->name('proxypay.show');
-
-// Verificar status (polling)
-Route::get('/payment/proxypay/check/{reference_id}', [App\Http\Controllers\ProxyPayController::class, 'check'])
-    ->name('proxypay.check');
-
-// Webhook ProxyPay
-Route::post('/webhook/proxypay', [App\Http\Controllers\ProxyPayController::class, 'webhook'])
-    ->name('proxypay.webhook');

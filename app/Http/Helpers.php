@@ -3180,19 +3180,3 @@ if (!function_exists('get_custom_labels')) {
         return $labels_array;
     }
 }
-
-// Helper function to check if prices should be shown to guest users
-if (!function_exists('should_show_price')) {
-    function should_show_price() {
-        // Check if guest price hiding is enabled
-        $hide_for_guest = get_setting('hide_price_for_guest');
-        
-        // If hiding is disabled (0), always show prices
-        if (!$hide_for_guest || $hide_for_guest == '0') {
-            return true;
-        }
-        
-        // If hiding is enabled, only show to logged-in users
-        return auth()->check();
-    }
-}

@@ -23,7 +23,6 @@ class VerifyCsrfToken extends Middleware
         '/config_content',
         '/paytm*',
         '/payhere*',
-        '/webhook/proxypay',
         '/stripe*',
         '/api/v2/stripe*',
         '/iyzico*',
