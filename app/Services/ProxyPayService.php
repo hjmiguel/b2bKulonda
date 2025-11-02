@@ -55,7 +55,7 @@ class ProxyPayService
             ]);
 
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Authorization' => 'Token ' . $this->apiKey,
                 'Accept' => 'application/vnd.proxypay.v2+json',
                 'Content-Type' => 'application/json',
             ])->post("{$this->baseUrl}/references", [
@@ -120,7 +120,7 @@ class ProxyPayService
     {
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Authorization' => 'Token ' . $this->apiKey,
                 'Accept' => 'application/vnd.proxypay.v2+json',
             ])->get("{$this->baseUrl}/references/{$referenceId}");
 
