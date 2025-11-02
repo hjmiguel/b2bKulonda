@@ -522,3 +522,20 @@ Route::controller(PageController::class)->group(function () {
 Route::controller(ContactController::class)->group(function () {
     Route::post('/contact', 'contact')->name('contact');
 });
+
+// Temporary route to export translations
+
+// ========================================
+// ProxyPay EMIS Routes (v1.0.1 - POLLING)
+// ========================================
+Route::get("/proxypay/reference/{referenceId}", "ProxyPayController@show")->name("proxypay.show");
+Route::get("/proxypay/check/{referenceId}", "ProxyPayController@checkPayment")->name("proxypay.check");
+Route::post("/webhook/proxypay", "ProxyPayController@webhook")->name("proxypay.webhook");
+
+// Rotas de exemplo para success/expired (adaptar ao seu projeto)
+Route::get("/proxypay/success/{referenceId}", "ProxyPayController@success")->name("payment.success");
+Route::get("/proxypay/expired/{referenceId}", "ProxyPayController@expired")->name("payment.expired");
+
+// ProxyPay AJAX Routes (Payment namespace - v1.0.1)
+Route::post("/proxypay/create-reference", "Payment\\ProxypayController@createReference")->name("proxypay.create-reference");
+Route::post("/proxypay/check-payment", "Payment\\ProxypayController@checkPayment")->name("proxypay.check-payment");

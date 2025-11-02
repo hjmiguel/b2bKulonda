@@ -237,4 +237,24 @@ class ProxyPayService
     {
         return $this->environment === 'production';
     }
+
+    /**
+     * Obter API Key configurada
+     *
+     * @return string
+     */
+    public function getApiKey()
+    {
+        return $this->apiKey;
+    }
+
+    /**
+     * Obter Base URL da API
+     *
+     * @return string
+     */
+    public function getBaseUrl()
+    {
+        return $this->baseUrl;
+    }
 }
