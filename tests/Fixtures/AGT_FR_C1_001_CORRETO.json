@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "1.0.0",
+  "submissionUUID": "550e8400-e29b-41d4-a716-446655440001",
+  "taxRegistrationNumber": "5000000000",
+  "submissionTimeStamp": "2025-11-03T20:45:00Z",
+  "softwareInfo": {
+    "softwareName": "Kulonda",
+    "softwareVersion": "1.0.0",
+    "softwareCertificate": "CERT-KULONDA-2025"
+  },
+  "numberOfEntries": 1,
+  "documents": [
+    {
+      "InvoiceNo": "FR A/2025/1",
+      "ATCUD": "ATCUD-FR-A-1",
+      "Hash": "abc123def456789",
+      "HashControl": "1",
+      "Period": 11,
+      "InvoiceDate": "2025-11-03",
+      "InvoiceType": "FR",
+      "SelfBillingIndicator": 0,
+      "SourceID": "1",
+      "SystemEntryDate": "2025-11-03T20:45:00",
+      "TransactionID": "TXN-20251103-001",
+      "CustomerID": "CLI001",
+      "BillingAddress": {
+        "BuildingNumber": "123",
+        "StreetName": "Rua Principal",
+        "AddressDetail": "Edificio A",
+        "City": "Luanda",
+        "PostalCode": "0000",
+        "Province": "Luanda",
+        "Country": "AO"
+      },
+      "ShipTo": {
+        "DeliveryID": "CLI001",
+        "DeliveryDate": "2025-11-03",
+        "Address": {
+          "BuildingNumber": "123",
+          "StreetName": "Rua Principal",
+          "AddressDetail": "Edificio A",
+          "City": "Luanda",
+          "PostalCode": "0000",
+          "Province": "Luanda",
+          "Country": "AO"
+        }
+      },
+      "Line": [
+        {
+          "LineNumber": 1,
+          "ProductCode": "PROD001",
+          "ProductDescription": "Produto Teste Angola Com NIF",
+          "Quantity": 10.00,
+          "UnitOfMeasure": "UN",
+          "UnitPrice": 1000.00,
+          "TaxPointDate": "2025-11-03",
+          "Description": "Produto para teste de conformidade C1 - Cliente Angola com NIF valido",
+          "DebitAmount": 10000.00,
+          "Tax": {
+            "TaxType": "IVA",
+            "TaxCountryRegion": "AO",
+            "TaxCode": "NOR",
+            "TaxPercentage": 14.00,
+            "TaxAmount": 1400.00
+          },
+          "TaxExemptionReason": "",
+          "SettlementAmount": 0.00
+        }
+      ],
+      "DocumentTotals": {
+        "TaxPayable": 1400.00,
+        "NetTotal": 10000.00,
+        "GrossTotal": 11400.00,
+        "Currency": {
+          "CurrencyCode": "AOA",
+          "CurrencyAmount": 11400.00
+        }
+      },
+      "Payment": {
+        "PaymentMechanism": "NU",
+        "PaymentAmount": 11400.00,
+        "PaymentDate": "2025-11-03"
+      }
+    }
+  ]
+}
