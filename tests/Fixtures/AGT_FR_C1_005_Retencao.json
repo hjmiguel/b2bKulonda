@@ -1,0 +1,67 @@
+{
+  "InvoiceNo": "FR A/2025/5",
+  "ATCUD": "ATCUD:FR-A-5",
+  "Hash": "xyz789ghi012",
+  "HashControl": "1",
+  "Period": 11,
+  "InvoiceDate": "2025-11-03",
+  "InvoiceType": "FR",
+  "SelfBillingIndicator": 0,
+  "SourceID": "1",
+  "SystemEntryDate": "2025-11-03T20:45:00",
+  "CustomerID": "CLI003",
+  "ShipTo": {
+    "DeliveryID": "CLI003",
+    "DeliveryDate": "2025-11-03",
+    "Address": {
+      "BuildingNumber": "456",
+      "StreetName": "Avenida 4 de Fevereiro",
+      "AddressDetail": "Ministerio X",
+      "City": "Luanda",
+      "PostalCode": "0000",
+      "Province": "Luanda",
+      "Country": "AO"
+    }
+  },
+  "Line": [
+    {
+      "LineNumber": 1,
+      "ProductCode": "SERV001",
+      "ProductDescription": "Servico Prestado ao Estado",
+      "Quantity": 1.00,
+      "UnitOfMeasure": "UN",
+      "UnitPrice": 100000.00,
+      "TaxPointDate": "2025-11-03",
+      "Description": "Prestacao de servicos profissionais",
+      "DebitAmount": 100000.00,
+      "Tax": {
+        "TaxType": "IVA",
+        "TaxCountryRegion": "AO",
+        "TaxCode": "NOR",
+        "TaxPercentage": 14.00,
+        "TaxAmount": 14000.00
+      },
+      "TaxExemptionReason": "",
+      "SettlementAmount": 0.00
+    }
+  ],
+  "DocumentTotals": {
+    "TaxPayable": 14000.00,
+    "NetTotal": 100000.00,
+    "GrossTotal": 114000.00
+  },
+  "WithholdingTax": [
+    {
+      "WithholdingTaxType": "IR",
+      "WithholdingTaxDescription": "Imposto sobre Rendimento - Retencao na Fonte",
+      "WithholdingTaxAmount": 6500.00,
+      "WithholdingTaxPercentage": 6.5
+    }
+  ],
+  "Payment": {
+    "PaymentMechanism": "TB",
+    "PaymentAmount": 107500.00,
+    "PaymentDate": "2025-11-03",
+    "PaymentReference": "TRF20251103001"
+  }
+}
