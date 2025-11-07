@@ -137,10 +137,21 @@
                                             </div>
                                         </div>
                                         <!-- Unit -->
+                                        <!-- Unit -->
                                         <div class="form-group row">
                                             <label class="col-xxl-3 col-from-label fs-13">{{translate('Unit')}} <span class="text-danger">*</span></label>
                                             <div class="col-xxl-9">
-                                                <input type="text" class="form-control @error('unit') is-invalid @enderror" name="unit" placeholder="{{ translate('Unit (e.g. KG, Pc etc)') }}" value="{{$product->getTranslation('unit', $lang)}}">
+                                                <select class="form-control aiz-selectpicker @error('unit_id') is-invalid @enderror" name="unit_id" data-live-search="true" required>
+                                                    <option value="">{{ translate('Select Unit') }}</option>
+                                                    @foreach (\App\Models\Unit::getActiveUnits() as $unit)
+                                                        <option value="{{ $unit->id }}" {{ $product->unit_id == $unit->id ? 'selected' : '' }}>
+                                                            {{ $unit->getTranslation('name') }} ({{ $unit->symbol }})
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <small class="text-muted">{{ translate('Legacy unit field (text)') }}: 
+                                                    <input type="text" class="form-control mt-2" name="unit" placeholder="{{ translate('Unit (e.g. KG, Pc etc)') }}" value="{{$product->getTranslation('unit', $lang)}}">
+                                                </small>
                                             </div>
                                         </div>
                                         <!-- Weight -->
@@ -194,7 +205,7 @@
                                             <div class="card-body">
                                                 <div class="h-300px overflow-auto c-scrollbar-light">
                                                     @php
-                                                        $old_categories = $product->categories()->pluck('category_id')->toArray();
+                                                        $old_categories = $product->categories->pluck('id')->toArray();
                                                     @endphp
                                                     <ul class="hummingbird-treeview-converter list-unstyled" data-checkbox-name="category_ids[]" data-radio-name="category_id">
                                                         @foreach ($categories as $category)
