@@ -171,7 +171,9 @@ class SearchController extends Controller
             $category_ids = CategoryUtility::children_ids($category_id);
             $category_ids[] = $category_id;
             $category = Category::with('childrenCategories')->find($category_id);
-            $products = $category->products();
+            $products = Product::whereHas('categories', function($q) use ($category_ids) {
+                $q->whereIn('category_id', $category_ids);
+            });
 
         }
         //------------------- category product count start here ----------------------
