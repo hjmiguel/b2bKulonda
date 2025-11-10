@@ -171,3 +171,71 @@ FIM SE
 **Produtos cadastrados:** 0 (ainda)
 **Pronto para usar:** SIM ✅
 
+
+---
+
+## ✅ ATUALIZAÇÃO: UNIDADES DE MEDIDA SINCRONIZADAS
+
+**Data:** 02/11/2025  
+**Mudança:** Wholesale agora usa o mesmo sistema de unidades dos produtos normais
+
+### O QUE FOI CORRIGIDO:
+
+**ANTES ❌:**
+- Wholesale usava campo texto livre para unidade
+- NÃO usava tabela `units` do sistema
+- Inconsistência entre wholesale e produtos normais
+
+**AGORA ✅:**
+- Wholesale usa dropdown de unidades cadastradas
+- 17 unidades disponíveis: Unidade, Caixa, Pacote, Kg, Litro, etc.
+- MESMA tabela `units` que produtos normais
+- Campo texto mantido como legacy/backup
+
+### UNIDADES DISPONÍVEIS:
+
+1. Unidade
+2. Caixa
+3. Pacote
+4. Fardo
+5. Engradado
+6. Palete
+7. Dúzia
+8. Quilograma (Kg)
+9. Grama (g)
+10. Tonelada (t)
+11. Litro (L)
+12. Mililitro (ml)
+13. Garrafa
+14. Barril
+15. Quilos por Caixa
+16. Unidades por Caixa
+17. Litros por Caixa
+
+### ARQUIVOS ATUALIZADOS:
+
+✅ `resources/views/wholesale/products/create.blade.php`
+✅ `resources/views/wholesale/products/edit.blade.php`
+✅ `resources/views/wholesale/frontend/seller_products/create.blade.php`
+✅ `resources/views/wholesale/frontend/seller_products/edit.blade.php`
+
+### COMO FUNCIONA:
+
+**Criar Produto Wholesale:**
+1. Admin/Seller seleciona unidade do dropdown
+2. Sistema salva `unit_id` (FK para tabela units)
+3. Campo texto `unit` mantido como fallback
+
+**Editar Produto Wholesale:**
+1. Unidade atual pré-selecionada no dropdown
+2. Pode mudar para qualquer unidade cadastrada
+3. Consistência garantida
+
+### BENEFÍCIOS:
+
+✅ **Consistência:** Wholesale e produtos normais usam MESMAS unidades
+✅ **Padronização:** Unidades controladas pelo sistema
+✅ **Conversões:** Pode usar Unit::convertQuantity() entre unidades
+✅ **Traduções:** Unidades suportam múltiplos idiomas
+✅ **Controle:** Admin pode adicionar/editar unidades centralizadamente
+

@@ -1,0 +1,28 @@
+Marco 3 - Atualização de Progresso (03/11/2025 17:00)
+
+Tarefas Completadas:
+✅ TASK-301: Instalar barryvdh/laravel-dompdf (v3.1.1)
+✅ TASK-302: Configurar DomPDF no config
+✅ TASK-303: Criar PDFGeneratorService
+✅ TASK-311: Criar template base para PDFs
+✅ TASK-312: Criar partial header (logo, dados empresa) - integrado no base template
+✅ TASK-313: Criar partial footer (QR Code, assinatura) - integrado no base template
+✅ TASK-314: Criar template de Fatura Recibo (FR)
+✅ TASK-315: Criar template de Fatura Simplificada (FS)
+✅ TASK-316: Criar template de Nota de Crédito (NC)
+✅ TASK-321: Instalar simplesoftwareio/simple-qrcode (v4.2.0)
+✅ TASK-322: Criar QRCodeGeneratorService
+✅ TASK-323: Implementar geração de QR Code com dados AGT
+
+Templates Criados:
+- resources/views/fiscal/pdf/base.blade.php (7.9KB)
+- resources/views/fiscal/pdf/fatura-recibo.blade.php (7.5KB)
+- resources/views/fiscal/pdf/fatura-simplificada.blade.php (4.8KB)
+- resources/views/fiscal/pdf/nota-credito.blade.php (6.5KB)
+- resources/views/fiscal/pdf/fatura.blade.php (7.9KB)
+
+Serviços Criados:
+- app/Services/Fiscal/PDFGeneratorService.php (3.8KB)
+- app/Services/Fiscal/QRCodeGeneratorService.php (4.0KB)
+
+Status Marco 3: ✅ 12/12 concluídas (100%)
