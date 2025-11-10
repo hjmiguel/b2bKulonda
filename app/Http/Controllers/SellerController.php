@@ -15,6 +15,8 @@ use App\Models\Wishlist;
 use Illuminate\Support\Facades\Hash;
 use App\Notifications\ShopVerificationNotification;
 use App\Services\PreorderService;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use App\Utility\EmailUtility;
 use Cache;
 use Carbon\Carbon;
@@ -102,10 +104,38 @@ class SellerController extends Controller
     {
         $request->validate(
             [
+                // Personal Info
                 'name' => 'required|max:255',
                 'email' => 'required|email|unique:users',
-                'shop_name' => 'max:200',
-                'address' => 'max:500',
+                'phone' => 'required|max:20',
+
+                // Shop Info
+                'shop_name' => 'required|max:200',
+                'tax_id' => 'required|max:50|unique:shops',
+                'registration_number' => 'nullable|max:50',
+                'company_type' => 'nullable|max:50',
+                'industry' => 'nullable|max:100',
+
+                // Address
+                'address' => 'required|max:500',
+                'city' => 'required|max:100',
+                'province' => 'nullable|max:100',
+                'postal_code' => 'nullable|max:20',
+                'company_email' => 'nullable|email|max:255',
+                'website' => 'nullable|url|max:255',
+
+                // Documents (KYC)
+                'business_license' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+                'tax_certificate' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+
+                // Bank Details
+                'bank_name' => 'nullable|max:255',
+                'bank_account_number' => 'nullable|max:255',
+                'bank_account_name' => 'nullable|max:255',
+                'iban' => 'nullable|max:255',
+
+                // Admin Notes
+                'admin_notes' => 'nullable|string',
             ],
             [
                 'name.required' => translate('Name is required'),
@@ -113,42 +143,100 @@ class SellerController extends Controller
                 'email.required' => translate('Email is required'),
                 'email.email' => translate('Email must be a valid email address'),
                 'email.unique' => translate('An user exists with this email'),
+                'phone.required' => translate('Phone is required'),
+                'shop_name.required' => translate('Shop name is required'),
                 'shop_name.max' => translate('Max 200 Character'),
-                'address.max' => translate('Max 255 Character'),
+                'tax_id.required' => translate('NIF/Tax ID is required'),
+                'tax_id.unique' => translate('This Tax ID is already registered'),
+                'address.required' => translate('Address is required'),
+                'address.max' => translate('Max 500 Character'),
+                'city.required' => translate('City is required'),
+                'business_license.required' => translate('Business license document is required'),
+                'business_license.mimes' => translate('Business license must be a PDF, JPG, JPEG or PNG file'),
+                'business_license.max' => translate('Business license must not exceed 5MB'),
+                'tax_certificate.required' => translate('Tax certificate document is required'),
+                'tax_certificate.mimes' => translate('Tax certificate must be a PDF, JPG, JPEG or PNG file'),
+                'tax_certificate.max' => translate('Tax certificate must not exceed 5MB'),
             ]
         );
-
 
         if (User::where('email', $request->email)->first() != null) {
             flash(translate('Email already exists!'))->error();
             return back();
         }
+
+        // Auto-generate password
         $password = substr(hash('sha512', rand()), 0, 8);
 
-        $user           = new User;
-        $user->name     = $request->name;
-        $user->email    = $request->email;
-        $user->user_type = "seller";
-        $user->password = Hash::make($password);
+        DB::beginTransaction();
 
-        if ($user->save()) {
-            $shop           = new Shop;
+        try {
+            // 1. Create User
+            $user           = new User;
+            $user->name     = $request->name;
+            $user->email    = $request->email;
+            $user->phone    = $request->phone;
+            $user->user_type = "seller";
+            $user->password = Hash::make($password);
+            $user->save();
+
+            // 2. Upload documents
+            $businessLicensePath = $request->file('business_license')->store('seller_documents', 'public');
+            $taxCertificatePath = $request->file('tax_certificate')->store('seller_documents', 'public');
+
+            // 3. Create Shop with all new fields
+            $shop = new Shop;
             $shop->user_id  = $user->id;
             $shop->name     = $request->shop_name;
-            $shop->address  = $request->address;
             $shop->slug     = 'demo-shop-' . $user->id;
+
+            // Contact Info
+            $shop->phone    = $request->phone;
+            $shop->company_email = $request->company_email;
+            $shop->website  = $request->website;
+
+            // Fiscal Data
+            $shop->tax_id   = $request->tax_id;
+            $shop->registration_number = $request->registration_number;
+
+            // Classification
+            $shop->company_type = $request->company_type;
+            $shop->industry = $request->industry;
+
+            // Address
+            $shop->address  = $request->address;
+            $shop->city     = $request->city;
+            $shop->province = $request->province;
+            $shop->postal_code = $request->postal_code;
+
+            // Documents
+            $shop->business_license_path = $businessLicensePath;
+            $shop->tax_certificate_path = $taxCertificatePath;
+
+            // Bank Details
+            $shop->bank_name = $request->bank_name;
+            $shop->bank_account_number = $request->bank_account_number;
+            $shop->bank_account_name = $request->bank_account_name;
+            $shop->iban = $request->iban;
+
+            // Admin Notes
+            $shop->admin_notes = $request->admin_notes;
+
             $shop->save();
 
+            // 4. Send registration email to seller
             try {
                 EmailUtility::selelr_registration_email('registration_from_system_email_to_seller', $user, $password);
             } catch (\Exception $e) {
-                $shop->delete();
-                $user->delete();
-                flash(translate('Registration failed. Please try again later.'))->error();
+                // If email fails, rollback everything
+                DB::rollBack();
+                Storage::disk('public')->delete($businessLicensePath);
+                Storage::disk('public')->delete($taxCertificatePath);
+                flash(translate('Registration failed. Could not send email. Please check SMTP settings.'))->error();
                 return back();
             }
 
-            // Verification email send
+            // 5. Verification email
             if (get_setting('email_verification') != 1) {
                 $user->email_verified_at = date('Y-m-d H:m:s');
                 $user->save();
@@ -156,27 +244,27 @@ class SellerController extends Controller
                 EmailUtility::email_verification($user, 'seller');
             }
 
-            // Seller Account Opening Email to Admin
+            // 6. Seller Account Opening Email to Admin
             if ((get_email_template_data('seller_reg_email_to_admin', 'status') == 1)) {
-                try {
-                    EmailUtility::selelr_registration_email('seller_reg_email_to_admin', $user, null);
-                } catch (\Exception $e) {
-                }
+                EmailUtility::seller_reg_email_to_admin($user);
             }
 
-            flash(translate('Seller has been added successfully'))->success();
-            return back();
-        }
-        flash(translate('Something went wrong'))->error();
-        return back();
-    }
+            DB::commit();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+            flash(translate('Seller has been registered successfully with complete professional profile!'))->success();
+            return redirect()->route('sellers.index');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // Delete uploaded files if they exist
+            if (isset($businessLicensePath)) Storage::disk('public')->delete($businessLicensePath);
+            if (isset($taxCertificatePath)) Storage::disk('public')->delete($taxCertificatePath);
+
+            flash(translate('Registration failed. Please try again. Error: ') . $e->getMessage())->error();
+            return back()->withInput();
+        }
+    }
     public function show($id)
     {
         //
