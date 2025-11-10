@@ -1,0 +1,11 @@
+# Proteger chaves privadas e certificados
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+*.csr
+
+# Permitir apenas README
+!README.md

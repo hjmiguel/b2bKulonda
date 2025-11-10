@@ -1,0 +1,18 @@
+{
+    "timestamp": "2025-11-02 00:47:11",
+    "statistics": {
+        "en": 2472,
+        "pt": 2475,
+        "coverage": "100.1%",
+        "total_languages": 23
+    },
+    "data_quality": {
+        "en_duplicates": 0,
+        "pt_duplicates": 0
+    },
+    "configuration": {
+        "default_language": "pt",
+        "environment": "production"
+    },
+    "status": "complete"
+}
