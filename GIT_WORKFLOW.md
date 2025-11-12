@@ -1,18 +1,37 @@
 # Git Workflow - Kulonda B2B Platform
 
+## 🔍 Identificar Qual Git Você Está Usando
+
+Para saber em qual repositório você está trabalhando, use o script helper:
+
+```bash
+~/git-info.sh
+```
+
+Ou navegue até o diretório e execute:
+```bash
+cd ~/kulonda-github && ~/git-info.sh      # Dev
+cd ~/domains/app.kulonda.ao/public_html && ~/git-info.sh  # Produção
+```
+
+---
+
 ## 📁 Estrutura de Repositórios
 
-### 1. **Repositório de Produção** (Local)
+### 1. **Repositório de Produção** [PRODUCTION] 🔴
 - **Localização**: `/home/u589337713/domains/app.kulonda.ao/public_html/`
 - **Branch**: `master`
+- **User**: `[PRODUCTION] Kulonda App <production@kulonda.ao>`
 - **Propósito**: Código em produção ativo
 - **URL**: https://app.kulonda.ao
+- **⚠️ AVISO**: NUNCA editar diretamente!
 
-### 2. **Repositório de Desenvolvimento** (GitHub)
+### 2. **Repositório de Desenvolvimento** [DEVELOPMENT] 🟢
 - **Localização**: `/home/u589337713/kulonda-github/`
 - **Branch**: `main`
+- **User**: `[DEVELOPMENT] Kulonda Dev <dev@kulonda.ao>`
 - **Remote**: https://github.com/hjmiguel/b2bKulonda.git
-- **Propósito**: Desenvolvimento e testes
+- **Propósito**: Desenvolvimento, testes e staging
 
 ---
 
@@ -23,6 +42,9 @@
 ```bash
 # Navegar para o diretório dev
 cd ~/kulonda-github
+
+# Confirmar que está no repositório correto
+~/git-info.sh
 
 # Criar uma nova branch para feature/fix
 git checkout -b feature/nome-da-feature
@@ -62,24 +84,26 @@ git push origin main
 **⚠️ ATENÇÃO: Sempre fazer backup antes de deploy!**
 
 ```bash
-# 1. Criar backup da produção
+# 1. Confirmar que está no repositório correto
 cd ~/domains/app.kulonda.ao/public_html
+~/git-info.sh
+
+# 2. Criar backup da produção
 git add .
 git commit -m "backup: antes do deploy $(date +%Y%m%d_%H%M%S)"
 
-# 2. Copiar arquivos específicos do dev para prod
+# 3. Copiar arquivos específicos do dev para prod
 # NUNCA copiar tudo! Apenas os arquivos alterados
 
 # Exemplo: copiar um arquivo específico
 cp ~/kulonda-github/app/Http/Controllers/MeuController.php \
    ~/domains/app.kulonda.ao/public_html/app/Http/Controllers/
 
-# 3. Commitar na produção
-cd ~/domains/app.kulonda.ao/public_html
+# 4. Commitar na produção
 git add app/Http/Controllers/MeuController.php
 git commit -m "deploy: MeuController atualizado"
 
-# 4. Testar em produção
+# 5. Testar em produção
 # Verificar se tudo funciona corretamente
 ```
 
@@ -89,11 +113,12 @@ git commit -m "deploy: MeuController atualizado"
 
 ### ✅ FAZER:
 
-1. **Sempre trabalhar no repositório dev primeiro**
-2. **Fazer commits frequentes com mensagens claras**
-3. **Testar no dev antes de fazer deploy**
-4. **Criar backup da produção antes de qualquer alteração**
-5. **Documentar alterações significativas**
+1. **Sempre usar ~/git-info.sh para confirmar o repositório**
+2. **Sempre trabalhar no repositório dev primeiro**
+3. **Fazer commits frequentes com mensagens claras**
+4. **Testar no dev antes de fazer deploy**
+5. **Criar backup da produção antes de qualquer alteração**
+6. **Documentar alterações significativas**
 
 ### ❌ NÃO FAZER:
 
@@ -102,10 +127,22 @@ git commit -m "deploy: MeuController atualizado"
 3. **❌ NUNCA copiar .env para GitHub**
 4. **❌ NUNCA fazer force push em produção**
 5. **❌ NUNCA fazer deploy de vendor/ ou node_modules/**
+6. **❌ NUNCA trabalhar sem verificar em qual git está**
 
 ---
 
 ## 🔍 Comandos Úteis
+
+### Identificar Repositório Atual
+
+```bash
+# Ver descrição completa do repositório
+~/git-info.sh
+
+# Ver apenas o nome do usuário git (rápido)
+git config user.name
+# Output: [PRODUCTION] Kulonda App  OU  [DEVELOPMENT] Kulonda Dev
+```
 
 ### Verificar Status
 
@@ -142,6 +179,9 @@ cd ~/domains/app.kulonda.ao/public_html && git checkout -- arquivo.php
 ```bash
 cd ~/domains/app.kulonda.ao/public_html
 
+# SEMPRE verificar primeiro
+~/git-info.sh
+
 # Ver commits
 git log --oneline -10
 
@@ -157,6 +197,9 @@ Se algo der errado em produção:
 
 ```bash
 cd ~/domains/app.kulonda.ao/public_html
+
+# CONFIRMAR que está no repositório correto!
+~/git-info.sh
 
 # Ver últimos commits
 git log --oneline -5
@@ -213,16 +256,36 @@ Estes já estão no `.gitignore`.
 
 ---
 
+## 🎯 Identificação Visual Rápida
+
+Quando usar `git log`, você verá:
+
+**Produção:**
+```
+Author: [PRODUCTION] Kulonda App <production@kulonda.ao>
+```
+
+**Desenvolvimento:**
+```
+Author: [DEVELOPMENT] Kulonda Dev <dev@kulonda.ao>
+```
+
+Isso ajuda a identificar rapidamente em qual ambiente um commit foi feito!
+
+---
+
 ## 📞 Suporte
 
 Em caso de dúvidas ou problemas com git:
 
-1. Verificar status: `git status`
-2. Ver histórico: `git log --oneline -10`
-3. Verificar diferenças: `git diff`
-4. Pedir ajuda antes de fazer alterações drásticas
+1. **PRIMEIRO**: Execute `~/git-info.sh` para saber onde está
+2. Verificar status: `git status`
+3. Ver histórico: `git log --oneline -10`
+4. Verificar diferenças: `git diff`
+5. Pedir ajuda antes de fazer alterações drásticas
 
 ---
 
 **Última atualização**: 2025-11-12
 **Criado por**: Claude Code Assistant
+**Versão**: 2.0 (com identificação de ambientes)
